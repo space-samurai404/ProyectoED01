@@ -148,7 +148,6 @@
     <ClInclude Include="Algoritmos.h" />
     <ClInclude Include="Grafo.h" />
     <ClInclude Include="Matrix.h" />
-    <ClInclude Include="Nodo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -30,6 +30,19 @@ public:
 		}
 	}
 
+	Matrix() {
+		if (rows <= 0 || columns <= 0) {
+			throw runtime_error("Number of rows and columns must be greater than zero.");
+		}
+
+		this->rows = 1;
+		this->columns = 1;
+		matrix = new E * [rows];
+		for (int i = 0; i < rows; i++) {
+			matrix[i] = new E[columns];
+		}
+	}
+
 	
 
 	~Matrix() {
@@ -76,15 +89,15 @@ public:
 	}
 
 
-	void expand(E value) {
+	void expand(E value) { //agrega un nodo
 		addRow(value);    
 		addColumn(value);
 	}
 
 
-	void shrink(int x, int y) {
+	void shrink(int x) { //Elimina un nodo
 		removeRow(x);
-		removeColumn(y);
+		removeColumn(x);
 	}
 
 	void transpose() {
@@ -194,7 +207,7 @@ public:
 		if (col < 0 || col >= columns) {
 			throw runtime_error("Invalid column. ");
 		}
-		E** new_matrix = new E * [columns - 1];
+		E** new_matrix = new E * [rows];
 		for (int i = 0; i < rows; i++) {
 			new_matrix[i] = new E[columns - 1];
 		}

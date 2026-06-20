@@ -1,11 +1,58 @@
 // Proyecto01.cpp : Este archivo contiene la función "main". La ejecución del programa comienza y termina ahí.
 //
-
+#include "Grafo.h"
+#include "Stack.h"
+#include "ArrayStack.h"
+#include "Matrix.h"
+#include <vector>
+#include <string>
+#include <SFML/Graphics.hpp>
 #include <iostream>
+#include "DFS.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+
+    sf::RenderWindow ventana(sf::VideoMode({ 900, 650 }), "Prueba de Dibujo - Grafo");
+    ventana.setFramerateLimit(60);
+
+    sf::Font fuente;
+    if (!fuente.openFromFile("arial.ttf")) {
+        // si no encuentra la fuente da error
+        return -1;
+    }
+
+    // ── Grafo de prueba ──
+    Grafo grafo(false); //no dirigido
+
+    grafo.agregarNodo(450, 80);   
+    grafo.agregarNodo(200, 250);  
+    grafo.agregarNodo(700, 250);  
+    grafo.agregarNodo(300, 480);  
+    grafo.agregarNodo(600, 480);  
+
+    grafo.agregarArista(0, 1, 9);
+    grafo.agregarArista(0, 2, 3);
+    grafo.agregarArista(1, 2, 6);
+    grafo.agregarArista(1, 3, 5);
+    grafo.agregarArista(2, 4, 2);
+    grafo.agregarArista(3, 4, 1);
+    grafo.agregarArista(0, 4, 7);
+
+    // ── Loop principal ──
+    while (ventana.isOpen()) {
+        
+        while (const std::optional<sf::Event> evento = ventana.pollEvent()) {
+            if (evento->is<sf::Event::Closed>())
+                ventana.close();
+        }
+
+        ventana.clear(sf::Color::White);
+        grafo.dibujar(ventana, fuente);
+        ventana.display();
+    }
+
+    return 0;
 }
 
 // Ejecutar programa: Ctrl + F5 o menú Depurar > Iniciar sin depurar

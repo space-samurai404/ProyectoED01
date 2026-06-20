@@ -21,9 +21,7 @@ public:
 	
 	Grafo hacerRecorrido(int primerNodo)
 	{
-
-		int nodo;
-
+		//correccion aca para que solo defina nodo 1 vez
 		int nodo = grafo->numNodos(); //Esto es para identificar y guardar la cantidad de nodos que tiene el grafo, los cuales recorrera
 
 
@@ -73,12 +71,9 @@ public:
 
 			}
 
-
-			delete[] nodosVisitados;
-
-			return aNuevo;
-
 		}
+		delete[] nodosVisitados;
+		return aNuevo; //Correccion aqui, delete y return deben ir fuera del while
 
 	}
 

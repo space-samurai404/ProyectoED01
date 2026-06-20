@@ -31,19 +31,47 @@ public:
 	}
 
 	Matrix() {
-		if (rows <= 0 || columns <= 0) {
-			throw runtime_error("Number of rows and columns must be greater than zero.");
-		}
-
-		this->rows = 1;
-		this->columns = 1;
+		rows = 1;
+		columns = 1;
 		matrix = new E * [rows];
 		for (int i = 0; i < rows; i++) {
 			matrix[i] = new E[columns];
 		}
+		matrix[0][0] = E();  
 	}
 
 	
+
+	Matrix(const Matrix& otra) {
+		rows = otra.rows;
+		columns = otra.columns;
+		matrix = new E * [rows];
+		for (int i = 0; i < rows; i++) {
+			matrix[i] = new E[columns];
+			for (int j = 0; j < columns; j++)
+				matrix[i][j] = otra.matrix[i][j];
+		}
+	}
+
+	
+	Matrix& operator=(const Matrix& otra) {
+		if (this == &otra) return *this; 
+
+		
+		for (int i = 0; i < rows; i++)
+			delete[] matrix[i];
+		delete[] matrix;
+
+		rows = otra.rows;
+		columns = otra.columns;
+		matrix = new E * [rows];
+		for (int i = 0; i < rows; i++) {
+			matrix[i] = new E[columns];
+			for (int j = 0; j < columns; j++)
+				matrix[i][j] = otra.matrix[i][j];
+		}
+		return *this;
+	}
 
 	~Matrix() {
 		for (int i = 0; i < rows; i++) {
@@ -51,6 +79,7 @@ public:
 		}
 		delete[] matrix;
 	}
+
 	E getValue(int row, int column) {
 		if (row < 0 || row >= rows) {
 			throw runtime_error("Invalid row. ");

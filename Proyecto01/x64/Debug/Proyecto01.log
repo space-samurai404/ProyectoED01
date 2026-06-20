@@ -1,0 +1,5 @@
+﻿  Proyecto01.cpp
+C:\Users\Usuario\OneDrive\Documentos\Proyectos ED\Proyecto01\Proyecto01\Grafo.h(22,25): warning C4267: 'return': conversión de 'size_t' a 'int'; posible pérdida de datos
+  (compilando archivo de origen "Proyecto01.cpp")
+  
+  Proyecto01.vcxproj -> C:\Users\Usuario\OneDrive\Documentos\Proyectos ED\Proyecto01\x64\Debug\Proyecto01.exe

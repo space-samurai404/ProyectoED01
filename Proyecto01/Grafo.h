@@ -12,11 +12,10 @@ public:
 	Matrix<int> ady;
 	vector<sf::Vector2f> posiciones;//clase de sfml que representa un vector 2D
 	bool dirigido;
-	sf::Font& fuente;//referencia  a la fuente
 
 
-	Grafo(bool dirigido = false) {
-		this->dirigido = dirigido;
+	Grafo(bool dirigido = false) : dirigido(dirigido) {
+	
 	}
 
 	int numNodos() {
@@ -41,25 +40,24 @@ public:
 		}
 	}
 
-	void dibujarNodo(sf::RenderWindow& ventana, int i) {
-		float x = posiciones[i].x;
-		float y = posiciones[i].y;
+	void dibujarNodo(sf::RenderWindow& v, int i, sf::Font& fuente) {
+		sf::Vector2f pos = posiciones[i];
 		// circulo
 		sf::CircleShape c(22.f);
 		c.setOrigin({ 22.f, 22.f });
-		c.setPosition({x, y});
+		c.setPosition(pos);
 		c.setFillColor(sf::Color(70, 130, 180));
 		c.setOutlineColor(sf::Color::Black);
 		c.setOutlineThickness(2.f);
-		ventana.draw(c);
+		v.draw(c);
 		sf::Text t(fuente);
 		t.setString(std::to_string(i));
 		t.setCharacterSize(16);
 		t.setFillColor(sf::Color::White);
 		sf::FloatRect r = t.getLocalBounds();
 		t.setOrigin({ r.position.x + r.size.x / 2, r.position.y + r.size.y / 2 });
-		t.setPosition({ x, y });
-		ventana.draw(t);
+		t.setPosition(pos);
+		v.draw(t);
 	}
 
 	void dibujarArista(sf::RenderWindow& v,sf::Vector2f a, sf::Vector2f b,sf::Color color = sf::Color::Black,float grosor = 2.f) {
@@ -76,7 +74,7 @@ public:
 		v.draw(linea);
 	}
 
-	void dibujar(sf::RenderWindow& ventana) {
+	void dibujar(sf::RenderWindow& ventana, sf::Font& fuente) {
 		//se dibujan primero las aristas
 		for (int i = 0; i < numNodos(); i++)
 			for (int j = i + 1; j < numNodos(); j++)
@@ -84,7 +82,7 @@ public:
 					dibujarArista(ventana, posiciones[i], posiciones[j]);
 		// y luego los nodos por encima
 		for (int i = 0; i < numNodos(); i++)
-			dibujarNodo(ventana, i);
+			dibujarNodo(ventana, i, fuente);
 	}
 
 	void eliminarArista(int org, int dest, int peso) {

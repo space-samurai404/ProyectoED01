@@ -146,8 +146,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algoritmos.h" />
+    <ClInclude Include="ArrayStack.h" />
+    <ClInclude Include="DFS.h" />
     <ClInclude Include="Grafo.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Stack.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,5 +1,4 @@
 #pragma once
-#include "Nodo.h"
 #include "Matrix.h"
 #include <vector>
 #include <string>
@@ -13,6 +12,8 @@ public:
 	Matrix<int> ady;
 	vector<sf::Vector2f> posiciones;//clase de sfml que representa un vector 2D
 	bool dirigido;
+	sf::Font& fuente;//referencia  a la fuente
+
 
 	Grafo(bool dirigido = false) {
 		this->dirigido = dirigido;
@@ -38,6 +39,52 @@ public:
 		if (!dirigido) {
 			ady.setValue(dest, org, peso);
 		}
+	}
+
+	void dibujarNodo(sf::RenderWindow& ventana, int i) {
+		float x = posiciones[i].x;
+		float y = posiciones[i].y;
+		// circulo
+		sf::CircleShape c(22.f);
+		c.setOrigin({ 22.f, 22.f });
+		c.setPosition({x, y});
+		c.setFillColor(sf::Color(70, 130, 180));
+		c.setOutlineColor(sf::Color::Black);
+		c.setOutlineThickness(2.f);
+		ventana.draw(c);
+		sf::Text t(fuente);
+		t.setString(std::to_string(i));
+		t.setCharacterSize(16);
+		t.setFillColor(sf::Color::White);
+		sf::FloatRect r = t.getLocalBounds();
+		t.setOrigin({ r.position.x + r.size.x / 2, r.position.y + r.size.y / 2 });
+		t.setPosition({ x, y });
+		ventana.draw(t);
+	}
+
+	void dibujarArista(sf::RenderWindow& v,sf::Vector2f a, sf::Vector2f b,sf::Color color = sf::Color::Black,float grosor = 2.f) {
+		sf::Vector2f dir = b - a;
+		float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+		if (len == 0) return;
+
+		sf::RectangleShape linea({ len, grosor }); 
+		linea.setPosition(a);                      
+		linea.setFillColor(color);
+		linea.setRotation(sf::degrees(std::atan2(dir.y, dir.x) * 180.f / 3.14159f));
+		
+
+		v.draw(linea);
+	}
+
+	void dibujar(sf::RenderWindow& ventana) {
+		//se dibujan primero las aristas
+		for (int i = 0; i < numNodos(); i++)
+			for (int j = i + 1; j < numNodos(); j++)
+				if (hayArista(i, j))
+					dibujarArista(ventana, posiciones[i], posiciones[j]);
+		// y luego los nodos por encima
+		for (int i = 0; i < numNodos(); i++)
+			dibujarNodo(ventana, i);
 	}
 
 	void eliminarArista(int org, int dest, int peso) {

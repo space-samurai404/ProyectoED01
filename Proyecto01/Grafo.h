@@ -4,6 +4,18 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
+// Descripcion general del archivo: La clase Grafo representa un grafo con una matriz de adyacencia y posiciones para dibujar los nodos
+// Resumen de funcionalidades: 
+//int numnodos: cuenta los nodos del grafo
+//void agregarNodo: Agrega un nodo al grafo y le asigna una posicion en el lienzo
+//void agregarArista: Crea una arista asignandole un nodo(posicion) de destino(posicion) y uno de final al igual que su peso
+//void dibujarNodo: dibuja un nodo segun su posicion
+//void dibujar arista: dibuja una arista segun su posicion
+
+
+
+
+
 using std::vector;
 
 class Grafo
@@ -23,7 +35,7 @@ public:
 	}
 
 	void agregarNodo(float x, float y) {
-		posiciones.push_back({ x, y });//agrega un elemento al final del vector
+		posiciones.push_back({ x, y });//agrega un elemento al final del vector, la posicion para dibujar
 		if (numNodos() == 1) {
 			ady = Matrix<int>(1, 1);
 			ady.setValue(0, 0, 0);
@@ -74,12 +86,53 @@ public:
 		v.draw(linea);
 	}
 
+	void dibujarAristaPeso(sf::RenderWindow& v, sf::Vector2f a, sf::Vector2f b, int peso, sf::Font& fuente, sf::Color color = sf::Color::Black, float grosor = 2.f) {
+		// linea
+		sf::Vector2f dir = b - a;
+		float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+		if (len == 0) return;
+
+		sf::RectangleShape linea({ len, grosor });
+		linea.setPosition(a);
+		linea.setFillColor(color);
+		linea.setRotation(sf::degrees(std::atan2(dir.y, dir.x) * 180.f / 3.14159f));
+		v.draw(linea);
+
+
+		sf::Vector2f mid = { (a.x + b.x) / 2.f, (a.y + b.y) / 2.f };
+
+		sf::Text t(fuente);                   
+		t.setString(std::to_string(peso));
+		t.setCharacterSize(13);
+		t.setFillColor(sf::Color(180, 0, 0));
+
+		sf::FloatRect r = t.getLocalBounds();
+		t.setOrigin({ r.position.x + r.size.x / 2,
+					 r.position.y + r.size.y / 2 });
+		t.setPosition(mid);
+
+		v.draw(t);
+	}
+
+
 	void dibujar(sf::RenderWindow& ventana, sf::Font& fuente) {
 		//se dibujan primero las aristas
 		for (int i = 0; i < numNodos(); i++)
 			for (int j = i + 1; j < numNodos(); j++)
 				if (hayArista(i, j))
 					dibujarArista(ventana, posiciones[i], posiciones[j]);
+		// y luego los nodos por encima
+		for (int i = 0; i < numNodos(); i++)
+			dibujarNodo(ventana, i, fuente);
+	}
+
+	void dibujarEtiquetado(sf::RenderWindow& ventana, sf::Font& fuente) {
+		//se dibujan primero las aristas
+		for (int i = 0; i < numNodos(); i++)
+			for (int j = i + 1; j < numNodos(); j++)
+				if (hayArista(i, j))
+					dibujarAristaPeso(ventana, posiciones[i], posiciones[j], pesoArista(i, j), fuente);
+					
 		// y luego los nodos por encima
 		for (int i = 0; i < numNodos(); i++)
 			dibujarNodo(ventana, i, fuente);

@@ -10,8 +10,79 @@
 #include <iostream>
 #include "DFS.h"
 
+//
+//void dibujarMenu(sf::RenderWindow& v, int i, sf::Font& fuente) {
+//    sf::Vector2f pos = posiciones[i];
+//    // circulo
+//    sf::CircleShape c(22.f);
+//    c.setOrigin({ 22.f, 22.f });
+//    c.setPosition(pos);
+//    c.setFillColor(sf::Color(70, 130, 180));
+//    c.setOutlineColor(sf::Color::Black);
+//    c.setOutlineThickness(2.f);
+//    v.draw(c);
+//    sf::Text t(fuente);
+//    t.setString(std::to_string(i));
+//    t.setCharacterSize(16);
+//    t.setFillColor(sf::Color::White);
+//    sf::FloatRect r = t.getLocalBounds();
+//    t.setOrigin({ r.position.x + r.size.x / 2, r.position.y + r.size.y / 2 });
+//    t.setPosition(pos);
+//    v.draw(t);
+//}
+
+float CalculoDistancia(sf::Vector2f a, sf::Vector2f b) {
+	float dx = b.x - a.x;
+	float dy = b.y - a.y;
+	return std::sqrt(dx * dx + dy * dy);
+}
+
+Grafo crearGrafoMenu(int cantNodos, float anchoLienzo, float altoLienzo, float distanciaConexion, int maxVecinos) {
+	Grafo grafo(false); //no dirigido
+	grafo.agregarNodo(450, 80);
+	grafo.agregarNodo(200, 250);
+	grafo.agregarNodo(700, 250);
+	grafo.agregarNodo(300, 480);
+	grafo.agregarNodo(600, 480);
+	for (int i = 0; i < cantNodos; i++) {
+        float x = 30 + rand() % (int)(anchoLienzo - 60); //posiciones para que sea aleatorio en el lienzo
+        float y = 30 + rand() % (int)(altoLienzo - 60);
+        grafo.agregarNodo(x, y);
+		
+	}
+
+	std::vector<int> contadorVecinos(cantNodos, 0); //contador para limitar vecinos
+
+
+	for (int i = 0; i < cantNodos; i++) {
+		for (int j = i + 1; j < cantNodos; j++) {
+            if (contadorVecinos[i] >= maxVecinos) {
+                break;
+            }
+            if (contadorVecinos[j] >= maxVecinos) {
+                continue;
+            }
+
+            float dist = CalculoDistancia(grafo.posiciones[i], grafo.posiciones[j]);
+				if (dist <= distanciaConexion) {
+					int peso = static_cast<int>(dist); //peso basado en la distancia
+					grafo.agregarArista(i, j, peso);
+					contadorVecinos[i]++;
+					contadorVecinos[j]++;
+				}
+			}
+		}
+	
+	return grafo;
+}
+
 int main()
 {
+
+
+
+    sf::RenderWindow menu(sf::VideoMode({ 900, 650 }), "Menu");
+
 
     sf::RenderWindow ventana(sf::VideoMode({ 900, 650 }), "Prueba de Dibujo - Grafo");
     ventana.setFramerateLimit(60);

@@ -9,27 +9,51 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "DFS.h"
+#include "BFS.h"
+#include "Dijkstra.h"
+#include "Prim.h"
+#include "kruskal.h"
+#include <optional>
 
-//
-//void dibujarMenu(sf::RenderWindow& v, int i, sf::Font& fuente) {
-//    sf::Vector2f pos = posiciones[i];
-//    // circulo
-//    sf::CircleShape c(22.f);
-//    c.setOrigin({ 22.f, 22.f });
-//    c.setPosition(pos);
-//    c.setFillColor(sf::Color(70, 130, 180));
-//    c.setOutlineColor(sf::Color::Black);
-//    c.setOutlineThickness(2.f);
-//    v.draw(c);
-//    sf::Text t(fuente);
-//    t.setString(std::to_string(i));
-//    t.setCharacterSize(16);
-//    t.setFillColor(sf::Color::White);
-//    sf::FloatRect r = t.getLocalBounds();
-//    t.setOrigin({ r.position.x + r.size.x / 2, r.position.y + r.size.y / 2 });
-//    t.setPosition(pos);
-//    v.draw(t);
-//}
+using std::runtime_error;
+using std::cout;
+using std::cin;
+using std::getline;
+using std::endl;
+using namespace std;
+using std::string;
+
+
+int nodoEnPosicion(Grafo& grafo, sf::Vector2f mouse, float radio = 22.f) {
+    for (int i = 0; i < grafo.numNodos(); i++) {
+        sf::Vector2f d = mouse - grafo.posiciones[i];
+        if (std::sqrt(d.x * d.x + d.y * d.y) <= radio)
+            return i;
+    }
+    return -1;
+
+}
+
+void dibujarResaltado(sf::RenderWindow& ventana, Grafo& base, Grafo& resultado, sf::Font& fuente, sf::Color colorResaltado) {
+    //1. Dibujar el grafo base en gris tenue
+    for (int i = 0; i < base.numNodos(); i++)
+        for (int j = i + 1; j < base.numNodos(); j++)
+            if (base.hayArista(i, j))
+                base.dibujarArista(ventana, base.posiciones[i], base.posiciones[j],
+                    sf::Color(80, 80, 80), 1.f);
+
+    // 2. Dibujar las aristas del resultado (DFS/BFS/Dijkstra/Prim/Floyd) resaltadas
+    for (int i = 0; i < resultado.numNodos(); i++)
+        for (int j = i + 1; j < resultado.numNodos(); j++)
+            if (resultado.hayArista(i, j))
+                resultado.dibujarArista(ventana, resultado.posiciones[i],
+                    resultado.posiciones[j], colorResaltado, 4.f);
+
+    // 3. Dibujar todos los nodos encima
+    for (int i = 0; i < base.numNodos(); i++)
+        base.dibujarNodo(ventana, i, fuente);
+}
+
 
 float CalculoDistancia(sf::Vector2f a, sf::Vector2f b) {
 	float dx = b.x - a.x;
@@ -79,16 +103,39 @@ Grafo crearGrafoMenu(int cantNodos, float anchoLienzo, float altoLienzo, float d
 int main()
 {
 
+        int dimensionx;
+        int dimensiony;
+        int cantNodos;
+        int cantMaxVecinos;
+        float distanciaConexion;
+        int algoritmo;
+        
+        cout << "Ingrese las dimensiones de la ventana: "<<endl;
+        cout << "Ingrese el ancho de la ventana:" << endl;
+        cin >> dimensionx;
+        cout << "\n";
+        cout << "Ingrese el alto de la ventana:" << endl;
+        cin >> dimensiony;
+        cout << "\n";
+        cout << "¿De cuantos nodos desea que sea el grafo?:" << endl;
+        cin >> cantNodos;
+        cout << "\n";
+        cout << "¿Cual va a ser la cantidad maxima de vecinos?:" << endl;
+        cin >> cantMaxVecinos;
+        cout << "\n";
+        cout << "¿Cual va a ser la distancia maxima de conexion entre nodos?:" << endl;
+        cin >> distanciaConexion;
+        cout << "\n";
+        cout << "¿Que algoritmo quiere ejecutar?:" << endl;
+        cout << "1). BFS" << endl << "2). DFS" << endl << "3). Dijkstra" << endl << "4). Prim" << endl<<"5). Kruskal" << endl;
+        cin >> algoritmo;
+        cout << "\n";
 
-
-    sf::RenderWindow menu(sf::VideoMode({ 900, 650 }), "Menu");
-
-
-    sf::RenderWindow ventana(sf::VideoMode({ 900, 650 }), "Prueba de Dibujo - Grafo");
+    sf::RenderWindow ventana(sf::VideoMode({ dimensionx, dimensiony }), "Grafo");
     ventana.setFramerateLimit(60);
 
     sf::Font fuente;
-    if (!fuente.openFromFile("arial.ttf")) {
+    if (!fuente.openFromFile("C:/Windows/Fonts/arial.ttf")) {
         // si no encuentra la fuente da error
         return -1;
     }
@@ -96,21 +143,33 @@ int main()
     // ── Grafo de prueba ──
     Grafo grafo(false); //no dirigido
 
-    grafo.agregarNodo(450, 80);   
-    grafo.agregarNodo(200, 250);  
-    grafo.agregarNodo(700, 250);  
-    grafo.agregarNodo(300, 480);  
-    grafo.agregarNodo(600, 480);  
+    grafo=crearGrafoMenu(cantNodos, dimensionx, dimensiony, distanciaConexion, cantMaxVecinos);
 
-    grafo.agregarArista(0, 1, 9);
-    grafo.agregarArista(0, 2, 3);
-    grafo.agregarArista(1, 2, 6);
-    grafo.agregarArista(1, 3, 5);
-    grafo.agregarArista(2, 4, 2);
-    grafo.agregarArista(3, 4, 1);
-    grafo.agregarArista(0, 4, 7);
+    Grafo arbolBFS(false);
+    Grafo arbolDFS(false);
 
-    // ── Loop principal ──
+
+    switch(algoritmo){
+    case 1:
+        BFS bfs(&grafo);
+        Grafo arbolBFS = bfs.hacerRecorrido(0);
+        break;
+    case 2:
+        DFS dfs(&grafo);
+        Grafo arbolDFS = dfs.hacerRecorrido(0);
+        break;
+
+    case 3:
+        Dijkstra dij(&grafo);
+        Grafo arbolDIJ= dij.buscarCaminoCorto(0);
+        break;
+
+    case 4:
+        Dijkstra dij(&grafo);
+        Grafo arbolDIJ = dij.buscarCaminoCorto(0);
+        break;
+    }
+   
     while (ventana.isOpen()) {
         
         while (const std::optional<sf::Event> evento = ventana.pollEvent()) {

@@ -149,7 +149,9 @@
     <ClInclude Include="ArrayStack.h" />
     <ClInclude Include="BFS.h" />
     <ClInclude Include="DFS.h" />
+    <ClInclude Include="Dijkstra.h" />
     <ClInclude Include="Grafo.h" />
+    <ClInclude Include="Kruskal.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Prim.h" />
     <ClInclude Include="Queue.h" />

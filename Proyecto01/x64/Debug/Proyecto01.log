@@ -1,5 +1,7 @@
 ﻿  Proyecto01.cpp
-C:\GitHub\ProyectoED01\Proyecto01\Grafo.h(22,25): warning C4267: 'return': conversión de 'size_t' a 'int'; posible pérdida de datos
+C:\GitHub\ProyectoED01\Proyecto01\Grafo.h(34,25): warning C4267: 'return': conversión de 'size_t' a 'int'; posible pérdida de datos
   (compilando archivo de origen "Proyecto01.cpp")
   
+C:\GitHub\ProyectoED01\Proyecto01\Proyecto01.cpp(48,17): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+C:\GitHub\ProyectoED01\Proyecto01\Proyecto01.cpp(49,17): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
   Proyecto01.vcxproj -> C:\GitHub\ProyectoED01\x64\Debug\Proyecto01.exe

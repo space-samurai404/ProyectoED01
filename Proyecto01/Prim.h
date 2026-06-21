@@ -58,7 +58,7 @@ public:
 			
 			nodosVisitados[destino] = true;
 			aNuevo.agregarArista(origen, destino, minPeso);
-			visitados++;
+			
 		}
 		delete[] nodosVisitados;
 		return aNuevo; 

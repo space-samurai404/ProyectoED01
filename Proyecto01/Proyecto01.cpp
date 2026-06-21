@@ -103,8 +103,8 @@ Grafo crearGrafoMenu(int cantNodos, float anchoLienzo, float altoLienzo, float d
 int main()
 {
 
-        int dimensionx;
-        int dimensiony;
+        unsigned int dimensionx;
+        unsigned int dimensiony;
         int cantNodos;
         int cantMaxVecinos;
         float distanciaConexion;
@@ -145,42 +145,79 @@ int main()
 
     grafo=crearGrafoMenu(cantNodos, dimensionx, dimensiony, distanciaConexion, cantMaxVecinos);
 
-    Grafo arbolBFS(false);
-    Grafo arbolDFS(false);
+    Grafo arbol(false);
+    bool hayResultado = false;
+
+    int origenDijkstra = -1;
+    int destinoDijkstra = -1;
 
 
-    switch(algoritmo){
-    case 1:
-        BFS bfs(&grafo);
-        Grafo arbolBFS = bfs.hacerRecorrido(0);
-        break;
-    case 2:
-        DFS dfs(&grafo);
-        Grafo arbolDFS = dfs.hacerRecorrido(0);
-        break;
-
-    case 3:
-        Dijkstra dij(&grafo);
-        Grafo arbolDIJ= dij.buscarCaminoCorto(0);
-        break;
-
-    case 4:
-        Dijkstra dij(&grafo);
-        Grafo arbolDIJ = dij.buscarCaminoCorto(0);
-        break;
+    if (algoritmo == 5) { // Kruskal no necesita nodo inicial
+        Kruskal krus(&grafo);
+        arbol = krus.hacerRecorrido();
+        hayResultado = true;
     }
-   
+
     while (ventana.isOpen()) {
-        
         while (const std::optional<sf::Event> evento = ventana.pollEvent()) {
             if (evento->is<sf::Event::Closed>())
                 ventana.close();
-        }
+            const sf::Event::MouseButtonPressed* click = evento->getIf<sf::Event::MouseButtonPressed>();
 
+            if (click != nullptr) {
+                sf::Vector2f mouse((float)click->position.x, (float)click->position.y);
+                int nodoClick = nodoEnPosicion(grafo, mouse);
+
+                if (nodoClick >= 0) {
+
+
+                    if (click->button == sf::Mouse::Button::Left) {
+                        BFS bfs(&grafo);
+                        arbol = bfs.hacerRecorrido(nodoClick);
+                        hayResultado = true;
+                    }
+                    if (algoritmo == 2 && click->button == sf::Mouse::Button::Left) {
+                        DFS dfs(&grafo);
+                        arbol = dfs.hacerRecorrido(nodoClick);
+                        hayResultado = true;
+                    }
+
+                    if (algoritmo == 3) {
+                        if (click->button == sf::Mouse::Button::Left)
+                            origenDijkstra = nodoClick;
+                        if (click->button == sf::Mouse::Button::Right)
+                            destinoDijkstra = nodoClick;
+
+                        if (origenDijkstra != -1 && destinoDijkstra != -1) {
+                            Dijkstra dij(&grafo);
+                            arbol = dij.buscarCaminoCorto(origenDijkstra, destinoDijkstra);
+                            hayResultado = true;
+                        }
+                        else {
+                            hayResultado = false; // no se muestra hasta tener ambos
+                        }
+                    }
+                    if (algoritmo == 4 && click->button == sf::Mouse::Button::Left) {
+                        Prim prim(&grafo);
+                        arbol = prim.hacerRecorrido(nodoClick);
+                        hayResultado = true;
+                    }
+
+                }
+            }
+        }
         ventana.clear(sf::Color::White);
-        grafo.dibujar(ventana, fuente);
+
+        if (hayResultado)
+            dibujarResaltado(ventana, grafo, arbol, fuente, sf::Color(255, 140, 0));
+        else
+            grafo.dibujar(ventana, fuente); // solo el grafo base mientras no hay resultado
+
         ventana.display();
     }
+   
+   
+    
 
     return 0;
 }

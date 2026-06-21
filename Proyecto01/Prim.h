@@ -30,16 +30,14 @@ public:
 			nodosVisitados[i] = false; 
 		}
 
-		ArrayStack<int> pila(nodo); 
-
 		nodosVisitados[primerNodo] = true;
-		pila.push(primerNodo);
+		int contadorVisitados = 1;
 
 
-		while (!pila.isEmpty()) {
-			int minPeso = -1;
-			int origen = -1;
-			int destino = -1;
+		while (contadorVisitados < nodo) {
+			int minPeso=-1;
+			int origen=-1;
+			int destino=-1;
 
 			for (int i = 0; i < nodo; i++) {
 				if (nodosVisitados[i]) {
@@ -55,7 +53,9 @@ public:
 					}
 				}
 			}
-			
+			if (destino == -1) {
+				break;  
+			}
 			nodosVisitados[destino] = true;
 			aNuevo.agregarArista(origen, destino, minPeso);
 			

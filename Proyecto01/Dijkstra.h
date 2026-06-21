@@ -163,22 +163,20 @@ public:
 
 		}
 
-		int nodoOrigen;
+		
 
 
-		nodoOrigen = pila.pop();
+		int nodoOrigen = pila.pop();
+		nodoActual = nodoOrigen;
 
 
 
 		while (!pila.isEmpty())
 		{
 
-			int ultimoNodo = pila.pop();
-
-			rutaCorta.agregarArista(nodoActual, ultimoNodo, grafo->pesoArista(nodoActual, ultimoNodo));
-
-
-			nodoActual = ultimoNodo;
+			int siguienteNodo = pila.pop();
+			rutaCorta.agregarArista(nodoActual, siguienteNodo,grafo->pesoArista(nodoActual, siguienteNodo));
+			nodoActual = siguienteNodo;
 
 		}
 

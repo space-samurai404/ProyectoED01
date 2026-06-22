@@ -53,6 +53,7 @@ public:
 		{
 
 			int nodoActual = pila.pop(); //Esto es para sacar el nodo que se encuentra en la cima de la pila
+			int aristaMedida = grafo->pesoArista(nodoActual, nodoVecino);
 
 			for (int nodoVecino = nodo - 1; nodoVecino >= 0;nodoVecino--) //Esto es para recorrer los nodos vecinos 
 			{
@@ -63,7 +64,7 @@ public:
 					nodosVisitados[nodoVecino] = true;
 
 
-					aNuevo.agregarArista(nodoActual, nodoVecino, grafo->pesoArista(nodoActual, nodoVecino)); // Esto es para agregar la arista al nuevo grafo, para asi construir el arbol de expasion 
+					aNuevo.agregarArista(nodoActual, nodoVecino, aristaMedida); // Esto es para agregar la arista al nuevo grafo, para asi construir el arbol de expasion 
 
 					pila.push(nodoVecino); // Esto es para agregar el nodo vecino a la pila para el recorrido
 

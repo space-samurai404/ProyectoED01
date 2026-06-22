@@ -169,13 +169,13 @@ public:
 		int nodoOrigen = pila.pop();
 		nodoActual = nodoOrigen;
 
-		int aristaMedida = grafo->pesoArista(nodoActual, siguienteNodo);
-
 
 		while (!pila.isEmpty())
 		{
-
+			
 			int siguienteNodo = pila.pop();
+			int aristaMedida = grafo->pesoArista(nodoActual, siguienteNodo);
+			
 			rutaCorta.agregarArista(nodoActual, siguienteNodo, aristaMedida);
 			nodoActual = siguienteNodo;
 

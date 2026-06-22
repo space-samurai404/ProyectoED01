@@ -63,7 +63,6 @@ public:
 		{
 
 			int nodoActual = cola.dequeue();
-			int aristaMedida = grafo->pesoArista(nodoActual, nodoVecino);
 
 			for (int nodoVecino = 0; nodoVecino < nodo; nodoVecino++)
 			{
@@ -73,6 +72,7 @@ public:
 
 					nodosVisitados[nodoVecino] = true;
 
+					int aristaMedida = grafo->pesoArista(nodoActual, nodoVecino);
 
 					nuevoArbol.agregarArista(nodoActual, nodoVecino, aristaMedida); // Esto es para agregar la arista al nuevo grafo, para asi construir el arbol de expasion 
 

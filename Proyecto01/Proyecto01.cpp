@@ -127,7 +127,7 @@ int main()
         cin >> distanciaConexion;
         cout << "\n";
         cout << "Que algoritmo quiere ejecutar?:" << endl;
-        cout << "1). BFS" << endl << "2). DFS" << endl << "3). Dijkstra" << endl << "4). Prim" << endl<<"5). Kruskal" << endl;
+        cout << "1). BFS" << endl << "2). DFS" << endl << "3). Dijkstra" << endl << "4). Prim" << endl<<"5). Kruskal" << endl << "6). Floyd" << endl;
         cin >> algoritmo;
         cout << "\n";
 
@@ -202,6 +202,8 @@ int main()
                         arbol = prim.hacerRecorrido(nodoClick);
                         hayResultado = true;
                     }
+
+                    
 
                 }
             }
